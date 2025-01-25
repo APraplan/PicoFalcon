@@ -42,39 +42,48 @@ set(PICO_BOARD pico CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(Hello_world C CXX ASM)
+project(PicoFalcon C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Hello_world)
+add_executable(PicoFalcon)
 
-pico_generate_pio_header(Hello_world ${CMAKE_CURRENT_LIST_DIR}/hello.pio)
+# pico_generate_pio_header(Hello_world ${CMAKE_CURRENT_LIST_DIR}/hello.pio)
 
-pico_set_program_name(Hello_world "Hello_world")
-pico_set_program_version(Hello_world "0.1")
+pico_set_program_name(PicoFalcon "PicoFalcon")
+pico_set_program_version(PicoFalcon "0.1")
 
-target_sources(Hello_world PRIVATE Hello_world.cpp)
+# Add all `.cpp` files in AccelStepperSDK/src and TMCStepperSDK/src to the target
+file(GLOB ACCELSTEPPER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/AccelStepperSDK/src/*.cpp)
+file(GLOB TMCSTEPPER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/TMCStepperSDK/src/source/*.cpp)
+file(GLOB TMCSTEPPER_SRC_HAL ${CMAKE_CURRENT_SOURCE_DIR}/TMCStepperSDK/src/source/TMC_HAL/*.cpp)
+file(GLOB TMCSTEPPER_SRC_INTERFACES ${CMAKE_CURRENT_SOURCE_DIR}/TMCStepperSDK/src/source/interfaces/*.cpp)
+
+# Add those files to the target
+target_sources(PicoFalcon PRIVATE main.cpp ${ACCELSTEPPER_SRC} ${TMCSTEPPER_SRC} ${TMCSTEPPER_SRC_HAL} ${TMCSTEPPER_SRC_INTERFACES})
+
+# target_sources(PicoFalcon PRIVATE main.cpp AccelStepperSDK/src/AccelStepper.cpp AccelStepperSDK/src/AccelStepper.hpp TMCStepperSDK/src/TMCStepper.h)
 
 # Modify the below lines to enable/disable output over UART/USB
 # pico_enable_stdio_uart(Hello_world 0)
-pico_enable_stdio_usb(Hello_world 1)
+pico_enable_stdio_usb(PicoFalcon 1)
 
 # Add the standard library to the build
-target_link_libraries(Hello_world pico_stdlib hardware_dma pico_multicore hardware_pio)
+target_link_libraries(PicoFalcon pico_stdlib hardware_dma pico_multicore hardware_pio hardware_spi)
 
-target_compile_definitions(Hello_world PRIVATE
+target_compile_definitions(PicoFalcon PRIVATE
   PICO_DEFAULT_FLOAT_IMPL=pico 
   PICO_DEFAULT_DOUBLE_IMPL=pico 
 )
 
 # Add the standard include files to the build
-target_include_directories(Hello_world PRIVATE
+target_include_directories(PicoFalcon PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
 )
 
-pico_add_extra_outputs(Hello_world)
+pico_add_extra_outputs(PicoFalcon)
 
 # add_custom_command(
 #     TARGET Hello_world POST_BUILD

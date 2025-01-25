@@ -1,11 +1,5 @@
-#include <stdio.h>
-#include "pico/stdlib.h"
-#include "hardware/dma.h"
-#include "string.h"
-#include "pico/multicore.h"
-#include "hardware/pio.h"
 
-#include "hello.pio.h"
+// #include "hello.pio.h"
 
 #define SOT 0x01
 #define EOT 0x04
@@ -27,10 +21,10 @@ int main() // Core 0 entry
     uint offset;
     uint freq = 9600;
 
-    bool success = pio_claim_free_sm_and_add_program_for_gpio_range(&hello_program, &pio, &sm, &offset, HELLO_PIO_LED_PIN, 1, true);
-    hard_assert(success);
+    // bool success = pio_claim_free_sm_and_add_program_for_gpio_range(&hello_program, &pio, &sm, &offset, HELLO_PIO_LED_PIN, 1, true);
+    // hard_assert(success);
 
-    hello_program_init(pio, sm, offset, HELLO_PIO_LED_PIN, freq);
+    // hello_program_init(pio, sm, offset, HELLO_PIO_LED_PIN, freq);
 
     gpio_set_function(0, GPIO_FUNC_UART);
     gpio_set_function(1, GPIO_FUNC_UART);
@@ -86,7 +80,7 @@ int main() // Core 0 entry
         counter++;
     }
 
-    pio_remove_program_and_unclaim_sm(&hello_program, pio, sm, offset);
+    // pio_remove_program_and_unclaim_sm(&hello_program, pio, sm, offset);
 
     return 0;
 }
